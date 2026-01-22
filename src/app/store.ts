@@ -1,5 +1,5 @@
-import { configureStore } from '@reduxjs/toolkit'
-import ledgerReducer from '../features/ledger/ledger.slice'
+import { configureStore } from "@reduxjs/toolkit"
+import ledgerReducer from "../features/ledger/ledger.slice"
 
 export const store = configureStore({
   reducer: {
