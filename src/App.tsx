@@ -1,54 +1,28 @@
-import { useDispatch, useSelector } from 'react-redux'
-import { v4 as uuid } from 'uuid'
-import { calculateHash } from './features/ledger/hashLedger'
-import { saveTx } from './features/ledger/ledger.db'
-import { addTransaction } from './features/ledger/ledger.slice'
-import LedgerDashboard from './features/ledger/ui/LedgerDashboard'
 import { useEffect, useState } from 'react'
+import LedgerDashboard from './features/ledger/ui/LedgerDashboard'
+
+type RationData = {
+  beneficiaryId: string
+  shopId: string
+  quantity: number
+  available: boolean
+}
 
 export default function App() {
-  const dispatch = useDispatch()
-  const lastHash = useSelector((state: { ledger: { lastHash: string } }) => state.ledger.lastHash)
-
+  // const dispatch = useDispatch()
+  const [ration, setRation] = useState<RationData | null>(null)
   const [showAdmin, setShowAdmin] = useState(false)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [ration, setRation] = useState<any>(null)
 
   useEffect(() => {
-    fetch('http://localhost:3333/api/ration-status')
+    fetch('http://localhost:3333/api/ration/BPL123')
       .then(res => res.json())
       .then(data => setRation(data))
   }, [])
 
   const collectRation = async () => {
-    const transactionTime = new Date().toISOString()
-
-    const txBase = {
-      beneficiaryId: ration.beneficiaryId,
-      shopId: ration.shopId,
-      quantity: ration.quantity,
-      period: ration.period,
-      transactionTime,
-      previousHash: lastHash,
-      deviceId: 'WEB_DEVICE'
-    }
-
-    const currentHash = calculateHash(txBase)
-
-    const tx = {
-      id: uuid(),
-      ...txBase,
-      currentHash,
-      isSynced: false
-    }
-
-    await saveTx(tx)
-    dispatch(addTransaction(tx))
-
     await fetch('http://localhost:3333/api/collect', { method: 'POST' })
-
     alert('📢 Ration successfully collected!')
-    setRation({ ...ration, available: false })
+    setRation({ ...ration!, available: false })
   }
 
   if (!ration) return <p>Loading...</p>
@@ -59,7 +33,10 @@ export default function App() {
 
       <p><b>Beneficiary ID:</b> {ration.beneficiaryId}</p>
       <p><b>Shop:</b> {ration.shopId}</p>
-      <p><b>Status:</b> {ration.available ? 'Ration Available ✅' : 'Already Collected ❌'}</p>
+      <p>
+        <b>Status:</b>{' '}
+        {ration.available ? 'Ration Available ✅' : 'Already Collected ❌'}
+      </p>
       <p><b>Quantity:</b> {ration.quantity} kg</p>
 
       {ration.available && (
