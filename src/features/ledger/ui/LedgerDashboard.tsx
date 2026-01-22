@@ -30,8 +30,8 @@ export default function LedgerDashboard() {
       />
 
       <TamperControls
-        onTamper={() => dispatch(tamperTransaction())}
-        onVerify={() => {}}
+      onTamper={() => dispatch(tamperTransaction())}
+      onVerify={() => {}}
       />
 
     </div>

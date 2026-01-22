@@ -1,55 +1,24 @@
-import { useEffect, useState } from 'react'
-import LedgerDashboard from './features/ledger/ui/LedgerDashboard'
-
-type RationData = {
-  beneficiaryId: string
-  shopId: string
-  quantity: number
-  available: boolean
-}
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Toaster } from './app/components/ui/sonner';
+import { LandingPage } from './app/components/LandingPage';
+import { ClientLogin } from './app/components/ClientLogin';
+import { PasswordSetup } from './app/components/PasswordSetup';
+import { ClientDashboard } from './app/components/ClientDashboard';
+import { ShopkeeperDashboard } from './app/components/ShopkeeperDashboard';
+import Camera from "./app/components/camera";
 
 export default function App() {
-  // const dispatch = useDispatch()
-  const [ration, setRation] = useState<RationData | null>(null)
-  const [showAdmin, setShowAdmin] = useState(false)
-
-  useEffect(() => {
-    fetch('http://localhost:3333/api/ration/BPL123')
-      .then(res => res.json())
-      .then(data => setRation(data))
-  }, [])
-
-  const collectRation = async () => {
-    await fetch('http://localhost:3333/api/collect', { method: 'POST' })
-    alert('📢 Ration successfully collected!')
-    setRation({ ...ration!, available: false })
-  }
-
-  if (!ration) return <p>Loading...</p>
-
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>Smart Ration Dashboard</h1>
-
-      <p><b>Beneficiary ID:</b> {ration.beneficiaryId}</p>
-      <p><b>Shop:</b> {ration.shopId}</p>
-      <p>
-        <b>Status:</b>{' '}
-        {ration.available ? 'Ration Available ✅' : 'Already Collected ❌'}
-      </p>
-      <p><b>Quantity:</b> {ration.quantity} kg</p>
-
-      {ration.available && (
-        <button onClick={collectRation}>Collect Ration</button>
-      )}
-
-      <hr />
-
-      <button onClick={() => setShowAdmin(!showAdmin)}>
-        {showAdmin ? 'Hide System Ledger' : 'Show System Ledger'}
-      </button>
-
-      {showAdmin && <LedgerDashboard />}
-    </div>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/client/login" element={<ClientLogin />} />
+        <Route path="/client/setup-password" element={<PasswordSetup />} />
+        <Route path="/client/dashboard" element={<ClientDashboard />} />
+        <Route path="/shopkeeper" element={<ShopkeeperDashboard />} />
+        <Route path="/camera" element={<Camera />} />
+      </Routes>
+      <Toaster />
+    </BrowserRouter>
+  );
 }

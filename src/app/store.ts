@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit"
 import ledgerReducer from "../features/ledger/ledger.slice"
+import authReducer from "../features/ledger/auth.slice"
 
 export const store = configureStore({
   reducer: {
-    ledger: ledgerReducer
+    ledger: ledgerReducer,
+    user: authReducer
   }
 })
 
