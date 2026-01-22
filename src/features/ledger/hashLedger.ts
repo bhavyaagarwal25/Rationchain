@@ -2,7 +2,7 @@ import { SHA256 } from 'crypto-js'
 import type { LedgerTransaction } from './ledger.types'
 
 
-export function calcclearulateHash(
+export function calculateHash(
   tx: Omit<LedgerTransaction, 'currentHash' | 'isSynced' | 'id'>
 ): string {
   const payload =
