@@ -1,3 +1,4 @@
+import type { LedgerTransaction } from './ledger.types'
 import { getUnsynced, markSynced } from './ledger.db'
 
 export async function syncLedger(deviceId: string) {
@@ -20,5 +21,27 @@ export async function syncLedger(deviceId: string) {
 
   for (const id of result.accepted) {
     await markSynced(id)
+  }
+}
+
+/* 👇👇 ADD THIS FUNCTION BELOW 👇👇 */
+export function verifyLedgerChain(
+  transactions: LedgerTransaction[]
+) {
+  for (let i = 1; i < transactions.length; i++) {
+    const prev = transactions[i - 1]
+    const curr = transactions[i]
+
+    if (curr.previousHash !== prev.currentHash) {
+      return {
+        valid: false,
+        breakIndex: i
+      }
+    }
+  }
+
+  return {
+    valid: true,
+    breakIndex: -1
   }
 }

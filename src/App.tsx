@@ -16,6 +16,9 @@ export default function App() {
       beneficiaryId: 'BPL123',
       shopId: 'SHOP01',
       quantity: 5,
+
+
+      
       period: '2026-01',
       transactionTime,
       previousHash: lastHash,
